@@ -4,61 +4,78 @@ import './styles.css';
 
 export default (props) => {
     let error = {
-        flag: true,
-        message: 'Initial Error Message'
+        flag: false,
+        message: ''
     }
     const getURL = (url) => {
-        return (url) ? url.trim() : '';
+        // TODO: Extended santisation
+        if (url && url.trim())
+            return url;
+        else 
+            error = {
+                flag: true,
+                message: 'Invalid Tableau URL'
+            }
     }
 
     const getToken = (token) => {
+        // TODO: Extended santisation
         return token;
     }
 
     const getFilters = (filters) => {
+        // TODO: Extended santisation
         if (Array.isArray(filters)) return {};
         if (typeof(filters) !== 'object') return {};
         return Object.assign({}, filters);
     }
 
     const getParameters = (parameters) => {
+        // TODO: Extended santisation
         if (Array.isArray(parameters)) return {};
         if (typeof(parameters) !== 'object') return {};
         return Object.assign({}, parameters);
     }
 
     const getOptions = (options) => {
+        // TODO: Extended santisation
         if (Array.isArray(options)) return {};
         if (typeof(options) !== 'object') return {};
         return Object.assign({}, options);
     }
 
     const getQuery = (query) => {
-        return (query) ? query.trim() : '';
+        if (query && query.trim())
+            // TODO: Extended santisation
+            return query.trim();
+        else
+            return '';
     }
 
-    const tableauURL = getURL(props.url);
-    const tableauToken = getToken(props.token);
-    const tableauFilters = getFilters(props.filters);
-    const tableauParameters = getParameters(props.parameters);
-    const tableauOptions = getOptions(props.options);
-    const tableauQuery = getQuery(props.query);
+    const filters = getFilters(props.filters);
+    const parameters = getParameters(props.parameters);
+    const options = getOptions(props.options);
+    const query = getQuery(props.query);
+
+    // Procedurally ordered last to make error message more informative by severity
+    const token = getToken(props.token);
+    const url = getURL(props.url);
 
     return (
         <>
             {
                 (error.flag) 
                 ?
-                    <div>{error.message}</div>
+                    <div className="tableau-error">{error.message}</div>
                 :
                     <div className="tableau-worksheet-container">
                         <TableauReport 
-                            url={tableauURL} 
-                            token={tableauToken}
-                            filters={tableauFilters}
-                            parameters={tableauParameters}
-                            options={tableauOptions}
-                            query={tableauQuery}
+                            url={url} 
+                            token={token}
+                            filters={filters}
+                            parameters={parameters}
+                            options={options}
+                            query={query}
                         />
                     </div>
             }
