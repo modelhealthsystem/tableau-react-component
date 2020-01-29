@@ -5,8 +5,8 @@ import App from './pages/app';
 import TableauComponent from './organisms/tableau-worksheet';
 import * as serviceWorker from './serviceWorker';
 
-const el = <App />
-// const el = <TableauComponent />
+// const el = <App />
+const el = <TableauComponent />
 
 ReactDOM.render(el, document.getElementById('root'));
 
@@ -14,3 +14,5 @@ ReactDOM.render(el, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+export default (e) => <TableauComponent {...e} />
