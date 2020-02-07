@@ -7,49 +7,67 @@ export default (props) => {
         flag: false,
         message: ''
     }
+    const anchored = (props.anchored && typeof(props.anchored) === 'boolean') ? props.anchored : false
+
     const getURL = (url) => {
-        // TODO: Extended santisation
-        if (url && url.trim())
+        // URL Format Match
+        const regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/|www\.)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
+        
+        if (url && typeof(url) === 'string' && url.trim() && url.match(regex))
             return url;
-        else 
+        else
             error = {
                 flag: true,
                 message: 'Invalid Tableau URL'
             }
+        return '';
     }
 
     const getToken = (token) => {
-        // TODO: Extended santisation
+        if (!token || typeof(token) !== 'string') return null
         return token;
     }
 
     const getFilters = (filters) => {
-        // TODO: Extended santisation
-        if (Array.isArray(filters)) return {};
-        if (typeof(filters) !== 'object') return {};
-        return Object.assign({}, filters);
+        if (filters && (typeof(filters) !== 'object' || Array.isArray(filters)))
+            error = {
+                flag: true,
+                message: 'Incorrect Filter type'
+            }
+        else
+            return Object.assign({}, filters);
     }
 
     const getParameters = (parameters) => {
-        // TODO: Extended santisation
-        if (Array.isArray(parameters)) return {};
-        if (typeof(parameters) !== 'object') return {};
-        return Object.assign({}, parameters);
+        if (parameters && (typeof(parameters) !== 'object' || Array.isArray(parameters)))
+            error = {
+                flag: true,
+                message: 'Incorrect Parameter type'
+            }
+        else
+            return Object.assign({}, parameters);
     }
 
     const getOptions = (options) => {
-        // TODO: Extended santisation
-        if (Array.isArray(options)) return {};
-        if (typeof(options) !== 'object') return {};
-        return Object.assign({}, options);
+        if (options && (typeof(options) !== 'object' || Array.isArray(options)))
+            error = {
+                flag: true,
+                message: 'Incorrect Options type'
+            }
+        else
+            return Object.assign({}, options);
     }
 
     const getQuery = (query) => {
-        if (query && query.trim())
-            // TODO: Extended santisation
-            return query.trim();
-        else
-            return '';
+        if (query && (typeof(query) !== 'object' || Array.isArray(query)))
+            error = {
+                flag: true,
+                message: 'Incorrect Query type'
+            }
+        else {
+            const standardisedQuery = Object.assign({}, query);
+            return Object.keys(standardisedQuery).map((key, idx) => { return `${(idx === 0) ? '?' : '&'}:${key}=${standardisedQuery[key]}`}).join('')
+        }
     }
 
     const filters = getFilters(props.filters);
@@ -61,24 +79,22 @@ export default (props) => {
     const token = getToken(props.token);
     const url = getURL(props.url);
 
-    return (
-        <>
-            {
-                (error.flag) 
-                ?
-                    <div className="tableau-error">{error.message}</div>
-                :
-                    <div className="tableau-worksheet-container">
-                        <TableauReport 
-                            url={url} 
-                            token={token}
-                            filters={filters}
-                            parameters={parameters}
-                            options={options}
-                            query={query}
-                        />
-                    </div>
-            }
-        </>
-    )
+    const tableauComponent = 
+        <TableauReport
+            url={url} 
+            token={token}
+            filters={filters}
+            parameters={parameters}
+            options={options}
+            query={query}
+        />
+
+    if (error.flag) 
+        return <div className="tableau-error">{error.message}</div>
+    else 
+        return (
+            (anchored)
+            ? <a href={url} className="tableau-anchor">{tableauComponent}</a>
+            : <div className="tableau-worksheet-container">{tableauComponent}</div>
+        )
 }

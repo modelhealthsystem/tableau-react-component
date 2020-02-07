@@ -4,26 +4,45 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
-
-pool:
-  name: Service
-
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    npm install
-    npm run test
-    npm run package
-  displayName: 'npm install and package, then publish to module repo'
-
-- task: Npm@1
-  inputs:
-    command: publish
-    publishRegistry: useFeed
-    publishFeed: 'react-components'
-  displayName: 'Publish NPM module'
+  - master
+  
+  pool:
+    name: Service
+  
+  steps:
+  - checkout: self
+    persistCredentials: true
+    clean: true
+    displayName: 'Allow Scripts to Access System Token'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+    displayName: 'Install Node.js'
+  
+  - script:
+      npm install
+    displayName: 'Install Dependencies'
+  
+  - script:
+      npm run test
+    displayName: 'Run Unit Tests'
+  
+  - script:
+      npm run package_win
+    displayName: 'Transpile Component'
+  
+  - script:
+      npm run update_version
+    displayName: 'Update Component Version'
+  
+  - task: Npm@1
+    inputs:
+      command: publish
+      publishRegistry: useFeed
+      publishFeed: 'react-components'
+    displayName: 'Publish NPM module'
+  
+  - task: BatchScript@1
+    inputs:
+      filename: 'merge.bat'
+    displayName: 'Merge Changes Back to Master Branch'
