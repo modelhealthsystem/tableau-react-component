@@ -70,31 +70,42 @@ export default (props) => {
         }
     }
 
+    const getFilterURL = (url, filters) => {
+        const filterString = Object.keys(filters).map((key, idx) => { return `${(idx === 0) ? '?' : '&'}${key}=${filters[key]}` }).join('%2C');
+        return `${url}${filterString}`;
+    }
+
     const filters = getFilters(props.filters);
     const parameters = getParameters(props.parameters);
     const options = getOptions(props.options);
     const query = getQuery(props.query);
 
+    
     // Procedurally ordered last to make error message more informative by severity
     const token = getToken(props.token);
     const url = getURL(props.url);
 
-    const tableauComponent = 
-        <TableauReport
-            url={url} 
-            token={token}
-            filters={filters}
-            parameters={parameters}
-            options={options}
-            query={query}
-        />
-
+    const filterURL = getFilterURL(url, filters);
+    
     if (error.flag) 
         return <div className="tableau-error">{error.message}</div>
     else 
         return (
             (anchored)
-            ? <a href={url} className="tableau-anchor">{tableauComponent}</a>
-            : <div className="tableau-worksheet-container">{tableauComponent}</div>
+            ?
+                <a href={filterURL} className="tableau-anchor">
+                    View on Tableau Server
+                </a>
+            :
+                <div className="tableau-worksheet-container">
+                    <TableauReport
+                        url={url} 
+                        token={token}
+                        filters={filters}
+                        parameters={parameters}
+                        options={options}
+                        query={query}
+                    />
+                </div>
         )
 }

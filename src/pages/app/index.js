@@ -4,7 +4,7 @@ import TableauComponent from '../../organisms/tableau-worksheet';
 export default () => {
   const state = {
     url: 'https://public.tableau.com/views/FilmGenrePopularity-1910-2018/GenreRelativePopularity',
-    anchored: false,
+    anchored: true,
     options: {
       hideTabs: true,
       hideToolbar: true
