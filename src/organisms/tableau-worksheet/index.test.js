@@ -146,20 +146,16 @@ describe('The Tableau Report', () => {
 	})
 
 	it('Should Render An Anchor Element Containing the Tableau Report', () => {
-        const anchored = true;
-        const td = Object.assign({anchored}, testData);
-        
-		const body = document.body;
-		body.insertAdjacentHTML('afterbegin', '<div id="report-test"></div>');
-		const reportTestElement = document.getElementById('report-test');
+		const anchored = true;
+        const filters = { startYear: [1989, 1990, 1991, 1992, 1993] };
+		const td = Object.assign({anchored, filters}, testData);
+		
+		const anchorURL = `${testData.url}${Object.keys(filters).map((key, idx) => { return `${(idx === 0) ? '?' : '&'}${key}=${filters[key]}` }).join('%2C')}`;
 
-        const wrapper = mount(<TableauReport {...td} />, { attachTo: reportTestElement });
+		const wrapper = mount(<TableauReport {...td} />);
+		
+		expect(wrapper.html().toString().search('tableau-anchor')).toBeGreaterThan(0);
+		expect(wrapper.html()).toBe(`<a href="${anchorURL}" class="tableau-anchor">View on Tableau Server</a>`);
 
-        expect(wrapper.prop('anchored')).toStrictEqual(true);
-        expect(wrapper.html().toString().search('tableau-anchor')).toBeGreaterThan(0);
-        expect(wrapper.html().toString().search('iframe')).toBeGreaterThan(0);
-        expect(wrapper.html().toString().search(`src="${testData.url}`)).toBeGreaterThan(0);
-		wrapper.detach();
-		body.removeChild(reportTestElement);
 	})
 })

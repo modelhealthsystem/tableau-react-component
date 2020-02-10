@@ -29,11 +29,13 @@ export default (props) => {
     }
 
     const getFilters = (filters) => {
-        if (filters && (typeof(filters) !== 'object' || Array.isArray(filters)))
+        if (filters && (typeof(filters) !== 'object' || Array.isArray(filters))) {
             error = {
                 flag: true,
                 message: 'Incorrect Filter type'
             }
+            return {};
+        }
         else
             return Object.assign({}, filters);
     }
