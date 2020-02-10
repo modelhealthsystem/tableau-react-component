@@ -1,27 +1,25 @@
 @echo off
 ECHO SOURCE BRANCH IS %BUILD_SOURCEBRANCH%
 SET sourceBranch=origin/%BUILD_SOURCEBRANCH:refs/heads/=%
-ECHO %sourceBranch% STATUS
+ECHO GIT STATUS
 git status
-ECHO %sourceBranch% ADD
+ECHO GIT ADD
 git add .
-ECHO %sourceBranch% COMMIT
+ECHO GIT COMMIT
 git commit -am "CI Build Merge to Master [skip ci]"
-
-ECHO CHECKOUT origin/master
-git checkout origin/master
-ECHO PULL origin/master
-git pull origin master
-ECHO master STATUS
+ECHO GIT CHECKOUT MASTER
+git checkout master
+ECHO GIT STATUS
 git status
-ECHO MERGE %sourceBranch% into master
+ECHO GIT MERGE
 git merge %sourceBranch% -m "CI Build Merge to Master [skip ci]"
-
-ECHO master STATUS
+ECHO GIT STATUS
 git status
-ECHO master ADD
+ECHO GIT ADD
 git add .
-ECHO master COMMIT
+ECHO GIT COMMIT
 git commit -am "CI Build Merge to Master [skip ci]"
-ECHO master PUSH
+ECHO GIT PUSH
 git push origin
+ECHO GIT STATUS
+git status
