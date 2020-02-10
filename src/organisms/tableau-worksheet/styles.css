@@ -9,6 +9,21 @@
     font-weight: bold;
 }
 
+.tableau-anchor {
+    padding: 1rem;
+    background: #2d4b65;
+    color: white;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-family: "Benton Sans","Benton Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.tableau-anchor:hover {
+    background: #102332;
+}
+
 .tableau-worksheet-container {
     display: flex;
     flex-flow: row nowrap;
