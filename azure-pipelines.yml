@@ -35,14 +35,14 @@ steps:
     npm run update_version
   displayName: 'Update Component Version'
 
+- task: BatchScript@1
+  inputs:
+    filename: 'merge.bat'
+  displayName: 'Merge Changes Back to Master Branch'
+
 - task: Npm@1
   inputs:
     command: publish
     publishRegistry: useFeed
     publishFeed: 'react-components'
   displayName: 'Publish NPM module'
-
-- task: BatchScript@1
-  inputs:
-    filename: 'merge.bat'
-  displayName: 'Merge Changes Back to Master Branch'
