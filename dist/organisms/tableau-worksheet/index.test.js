@@ -146,20 +146,18 @@ describe('The Tableau Report', () => {
   });
   it('Should Render An Anchor Element Containing the Tableau Report', () => {
     const anchored = true;
+    const filters = {
+      startYear: [1989, 1990, 1991, 1992, 1993]
+    };
     const td = Object.assign({
-      anchored
+      anchored,
+      filters
     }, testData);
-    const body = document.body;
-    body.insertAdjacentHTML('afterbegin', '<div id="report-test"></div>');
-    const reportTestElement = document.getElementById('report-test');
-    const wrapper = mount(React.createElement(TableauReport, td), {
-      attachTo: reportTestElement
-    });
-    expect(wrapper.prop('anchored')).toStrictEqual(true);
+    const anchorURL = `${testData.url}${Object.keys(filters).map((key, idx) => {
+      return `${idx === 0 ? '?' : '&'}${key}=${filters[key]}`;
+    }).join('%2C')}`;
+    const wrapper = mount(React.createElement(TableauReport, td));
     expect(wrapper.html().toString().search('tableau-anchor')).toBeGreaterThan(0);
-    expect(wrapper.html().toString().search('iframe')).toBeGreaterThan(0);
-    expect(wrapper.html().toString().search(`src="${testData.url}`)).toBeGreaterThan(0);
-    wrapper.detach();
-    body.removeChild(reportTestElement);
+    expect(wrapper.html()).toBe(`<a href="${anchorURL}" class="tableau-anchor">View on Tableau Server</a>`);
   });
 });
