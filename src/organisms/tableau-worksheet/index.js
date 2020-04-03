@@ -95,7 +95,7 @@ export default (props) => {
         return (
             (anchored)
             ?
-                <a href={filterURL} className="tableau-anchor">
+                <a href={filterURL} className="tableau-anchor" rel="noopener noreferrer" target="_blank">
                     View on Tableau Server
                 </a>
             :
